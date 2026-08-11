@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Étape 1 : Partir d'une image Node.js officielle
-FROM node:20-alpine
+FROM node:22-alpine3.22
 
 # Étape 2 : Créer un dossier de travail dans le container
 WORKDIR /app
