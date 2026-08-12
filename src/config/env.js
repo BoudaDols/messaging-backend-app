@@ -9,7 +9,8 @@ const requiredVars = [
    'SERVICE_NAME',
    'LOG_LEVEL',
    'DB_URL',
-   'REDIS_URL'
+   'REDIS_URL', 
+   'JWT_SECRET'
 ];
 
 /**

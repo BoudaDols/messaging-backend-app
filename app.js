@@ -7,18 +7,26 @@ const errorHandler = require('./src/middleware/errorHandler');
 const { connectDatabase } = require('./src/config/database');
 const { connectRedis } = require('./src/config/redis');
 
+// Import des routes
+const authRoutes = require('./src/routes/auth');
+
 const app = express();
 
+// Middleware pour parser le JSON dans le body des requêtes
+app.use(express.json());
+
+// Route de test
 app.get("/", (req, res) => {
-   res.json({
-      message: "Welcome to the home page"
-   });
+  res.json({ message: "Welcome to the messaging platform API" });
 });
 
-// Error handler — toujours en dernier middleware
+// Monter les routes
+app.use('/api/auth', authRoutes);
+
+// Error handler — toujours en dernier
 app.use(errorHandler);
 
-// Démarrer l'app : connecter aux services PUIS écouter
+// Démarrer le serveur
 async function startServer() {
   await connectDatabase();
   await connectRedis();
