@@ -8,7 +8,7 @@
 	"main": "app.js",
 	"scripts": {
 		"start": "nodemon app.js",
-		"test": "jest --passWithNoTests",
+		"test": "jest",
 		"lint": "biome check .",
 		"format": "biome format . --write"
 	},
