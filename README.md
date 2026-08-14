@@ -8,7 +8,7 @@ A real-time messaging platform built with Node.js as a learning project.
 - **Framework**: Express.js 5
 - **Database**: MongoDB (via Mongoose 9)
 - **Cache/PubSub**: Redis
-- **Authentication**: JWT + bcryptjs
+- **Authentication**: JWT + bcrypt
 - **Containerization**: Docker + Docker Compose
 
 ## Getting Started
@@ -170,7 +170,7 @@ All errors return a consistent JSON format:
 
 ## Security Features
 
-- **Password hashing**: bcryptjs with 10 salt rounds
+- **Password hashing**: bcrypt with 10 salt rounds
 - **Strong passwords required**: uppercase, lowercase, number, special character
 - **JWT tokens**: 24h for registration, 60m for login
 - **Account lockout**: 5 failed attempts → 30 min lock
