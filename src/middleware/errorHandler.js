@@ -4,13 +4,13 @@
  * and returns a consistent JSON response.
  */
 
-const { v4: uuidv4 } = require("uuid");
+const { randomUUID } = require("crypto");
 const logger = require("../utils/logger");
 const { AppError } = require("../utils/errors");
 
 function errorHandler(err, req, res, next) {
 	// Générer un ID de correlation pour tracer l'erreur
-	const correlationId = req.correlationId || uuidv4();
+	const correlationId = req.correlationId || randomUUID();
 
 	//Si c'est une de nos erreurs (AppError ou ses enfants)
 	if (err instanceof AppError) {

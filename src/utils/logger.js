@@ -3,7 +3,7 @@
  * Provides consistent log formatting across all services.
  */
 
-const { v4: uuidv4 } = require("uuid");
+const { randomUUID } = require("crypto");
 
 const LOG_LEVELS = {
 	debug: 0,
@@ -27,7 +27,7 @@ function createLog(level, message, metadata = {}) {
 		timestamp: new Date().toISOString(),
 		service: process.env.SERVICE_NAME || "api-server",
 		level,
-		correlationId: metadata.correlationId || uuidv4(),
+		correlationId: metadata.correlationId || randomUUID(),
 		message,
 		metadata,
 	};
