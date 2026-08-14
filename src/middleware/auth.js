@@ -9,7 +9,7 @@ const { UnauthorizedError } = require("../utils/errors");
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
 
-function authMiddleware(req, res, next) {
+function authMiddleware(req, _res, next) {
 	// 1. Extraire le header Authorization
 	const authHeader = req.headers.authorization;
 

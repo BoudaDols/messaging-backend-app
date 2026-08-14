@@ -5,12 +5,12 @@ const { connectDatabase } = require("./src/config/database");
 const { connectRedis } = require("./src/config/redis");
 
 async function startServer() {
-   await connectDatabase();
-   await connectRedis();
+	await connectDatabase();
+	await connectRedis();
 
-   app.listen(config.port, () => {
-      logger.info("Server started", { port: config.port });
-   });
+	app.listen(config.port, () => {
+		logger.info("Server started", { port: config.port });
+	});
 }
 
 startServer();

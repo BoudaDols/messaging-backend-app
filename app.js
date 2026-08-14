@@ -12,8 +12,8 @@ const app = express();
 app.use(express.json());
 
 // Route de test
-app.get("/", (req, res) => {
-   res.json({ message: "Welcome to the messaging platform API" });
+app.get("/", (_req, res) => {
+	res.json({ message: "Welcome to the messaging platform API" });
 });
 
 // Monter les routes

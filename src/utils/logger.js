@@ -3,7 +3,7 @@
  * Provides consistent log formatting across all services.
  */
 
-const { randomUUID } = require("crypto");
+const { randomUUID } = require("node:crypto");
 
 const LOG_LEVELS = {
 	debug: 0,

@@ -56,7 +56,7 @@ function getRedisClient() {
  * Permet de définir le client Redis manuellement (pour les tests)
  */
 function setRedisClient(client) {
-   redisClient = client;
+	redisClient = client;
 }
 
 module.exports = { connectRedis, getRedisClient, setRedisClient };

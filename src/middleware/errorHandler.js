@@ -4,11 +4,11 @@
  * and returns a consistent JSON response.
  */
 
-const { randomUUID } = require("crypto");
+const { randomUUID } = require("node:crypto");
 const logger = require("../utils/logger");
 const { AppError } = require("../utils/errors");
 
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res, _next) {
 	// Générer un ID de correlation pour tracer l'erreur
 	const correlationId = req.correlationId || randomUUID();
 
