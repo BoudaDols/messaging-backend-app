@@ -6,6 +6,7 @@ const errorHandler = require("./src/middleware/errorHandler");
 // Import des routes
 const authRoutes = require("./src/routes/auth");
 const userRoutes = require("./src/routes/users");
+const contactRoutes = require("./src/routes/contacts");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get("/", (_req, res) => {
 // Monter les routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/contacts", contactRoutes);
 
 // Error handler — toujours en dernier
 app.use(errorHandler);
