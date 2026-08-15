@@ -76,8 +76,10 @@ async function addContact(req, res, next) {
 		}
 
 		// Retourner la liste mise à jour
-		const contacts = await Contact.find({ userId: req.user.userId })
-			.populate("contactId", "displayName email avatar presence");
+		const contacts = await Contact.find({ userId: req.user.userId }).populate(
+			"contactId",
+			"displayName email avatar presence",
+		);
 
 		const sortedContacts = contacts
 			.map((c) => ({
@@ -120,8 +122,10 @@ async function removeContact(req, res, next) {
 		}
 
 		// Retourner la liste mise à jour
-		const contacts = await Contact.find({ userId: req.user.userId })
-			.populate("contactId", "displayName email avatar presence");
+		const contacts = await Contact.find({ userId: req.user.userId }).populate(
+			"contactId",
+			"displayName email avatar presence",
+		);
 
 		const sortedContacts = contacts
 			.map((c) => ({
