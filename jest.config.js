@@ -8,4 +8,5 @@ module.exports = {
 		"!src/config/redis.js",
 	],
 	transformIgnorePatterns: ["/node_modules/(?!uuid)/"],
+	maxWorkers: 1,
 };
