@@ -81,12 +81,19 @@ async function sendMessage(req, res, next) {
 
 		// Nouvelle conversation
 		if (!recipientId) {
-			throw new ValidationError("recipientId is required for new conversations", {
-				field: "recipientId",
-			});
+			throw new ValidationError(
+				"recipientId is required for new conversations",
+				{
+					field: "recipientId",
+				},
+			);
 		}
 
-		const message = await messageService.createMessage(userId, recipientId, content);
+		const message = await messageService.createMessage(
+			userId,
+			recipientId,
+			content,
+		);
 
 		res.status(201).json({
 			message: "Message sent successfully",

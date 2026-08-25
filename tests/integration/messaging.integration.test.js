@@ -245,9 +245,7 @@ describe("GET /api/conversations/:id/messages", () => {
 		// Vérifier l'ordre décroissant
 		const dates = res.body.messages.map((m) => new Date(m.createdAt));
 		for (let i = 0; i < dates.length - 1; i++) {
-			expect(dates[i].getTime()).toBeGreaterThanOrEqual(
-				dates[i + 1].getTime(),
-			);
+			expect(dates[i].getTime()).toBeGreaterThanOrEqual(dates[i + 1].getTime());
 		}
 	});
 
@@ -290,9 +288,7 @@ describe("GET /api/conversations/:id/messages", () => {
 				res1.body.messages[res1.body.messages.length - 1].createdAt,
 			);
 			const firstOfPage2 = new Date(res2.body.messages[0].createdAt);
-			expect(lastOfPage1.getTime()).toBeGreaterThan(
-				firstOfPage2.getTime(),
-			);
+			expect(lastOfPage1.getTime()).toBeGreaterThan(firstOfPage2.getTime());
 		}
 	});
 

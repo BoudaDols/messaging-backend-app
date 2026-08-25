@@ -15,8 +15,11 @@ const MAX_PAGE_SIZE = 50;
 async function getConversations(req, res, next) {
 	try {
 		const userId = req.user.userId;
-		const page = parseInt(req.query.page) || 1;
-		const limit = Math.min(parseInt(req.query.limit) || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+		const page = parseInt(req.query.page, 10) || 1;
+		const limit = Math.min(
+			parseInt(req.query.limit, 10) || DEFAULT_PAGE_SIZE,
+			MAX_PAGE_SIZE,
+		);
 		const skip = (page - 1) * limit;
 
 		const conversations = await Conversation.find({

@@ -16,89 +16,103 @@ const MAX_UNDELIVERED_MESSAGES = 1000;
 /**
  * Crée un nouveau message et met à jour la conversation
  */
-async function createMessage(senderId, recipientId, content, fileAttachment = null) {
-   // Valider le contenu
-   if(!fileAttachment){
-      if(!content || typeof content !== "string" || content.trim().length === 0){
-         throw new ValidationError("Message content is required", { field: "content" });
-      }
-      if(content.length > MAX_MESSAGE_LENGTH){
-         throw new ValidationError(`Message content must not exceed ${MAX_MESSAGE_LENGTH} characters`,
+async function createMessage(
+	senderId,
+	recipientId,
+	content,
+	fileAttachment = null,
+) {
+	// Valider le contenu
+	if (!fileAttachment) {
+		if (
+			!content ||
+			typeof content !== "string" ||
+			content.trim().length === 0
+		) {
+			throw new ValidationError("Message content is required", {
+				field: "content",
+			});
+		}
+		if (content.length > MAX_MESSAGE_LENGTH) {
+			throw new ValidationError(
+				`Message content must not exceed ${MAX_MESSAGE_LENGTH} characters`,
 				{ field: "content", max: MAX_MESSAGE_LENGTH },
-         );
-      }
-   }
+			);
+		}
+	}
 
-   // Verifier que le destinataire existe
-   const recipient = await User.findById(recipientId);
-   if(!recipient){
-      throw new NotFoundError("Recipient not found");
-   }
+	// Verifier que le destinataire existe
+	const recipient = await User.findById(recipientId);
+	if (!recipient) {
+		throw new NotFoundError("Recipient not found");
+	}
 
-   // Trouver ou creer la conversation
-   const conversation = await findOrCreateConversation(senderId, recipientId);
+	// Trouver ou creer la conversation
+	const conversation = await findOrCreateConversation(senderId, recipientId);
 
-   // Creer le message
-   const message = await Message.create({
-      conversationId: conversation._id,
+	// Creer le message
+	const message = await Message.create({
+		conversationId: conversation._id,
 		senderId,
 		recipientId,
 		content: content ? content.trim() : null,
 		fileAttachment,
 		deliveryStatus: "sent",
-   });
+	});
 
-   // Mettre a jour la conversation
-   const preview = content
-                  ? content.substring(0, 100)
-                  : "Fichier";
+	// Mettre a jour la conversation
+	const preview = content ? content.substring(0, 100) : "Fichier";
 
-   conversation.lastMessage = {
-      content: preview,
+	conversation.lastMessage = {
+		content: preview,
 		senderId,
 		createdAt: message.createdAt,
-   };
+	};
 
-   // Incrementer le compteur de non lu pour le destinataire
-   const currentCount = conversation.unreadCount.get(recipientId.toString()) || 0;
-   conversation.unreadCount.set(recipientId.toString(), currentCount + 1);
+	// Incrementer le compteur de non lu pour le destinataire
+	const currentCount =
+		conversation.unreadCount.get(recipientId.toString()) || 0;
+	conversation.unreadCount.set(recipientId.toString(), currentCount + 1);
 
-   await conversation.save();
+	await conversation.save();
 
-   logger.info("Message created", {
-      messageId: message._id,
+	logger.info("Message created", {
+		messageId: message._id,
 		conversationId: conversation._id,
 		senderId,
 		recipientId,
-   });
+	});
 
-   return message;
+	return message;
 }
-
 
 /**
  * Trouve une conversation existante entre 2 utilisateurs, ou en crée une nouvelle
  */
-async function findOrCreateConversation(userIdA, userIdB){
-   // Chercher une conversation existante avec ces 2 participants
-   let conversation = await Conversation.findOne({
-      participants: { $all: [userIdA, userIdB] },
+async function findOrCreateConversation(userIdA, userIdB) {
+	// Chercher une conversation existante avec ces 2 participants
+	let conversation = await Conversation.findOne({
+		participants: { $all: [userIdA, userIdB] },
 		deletedBy: { $nin: [userIdA] }, // Pas supprimée par l'envoyeur
-   });
+	});
 
-   if(!conversation){
-      conversation = await Conversation.create({
-         participants: [userIdA, userIdB],
-      });
-   }
+	if (!conversation) {
+		conversation = await Conversation.create({
+			participants: [userIdA, userIdB],
+		});
+	}
 
-   return conversation;
+	return conversation;
 }
 
 /**
  * Récupère l'historique des messages avec pagination par curseur
  */
-async function getConversationMessages(conversationId, cursor = null, limit = DEFAULT_PAGE_SIZE) {
+async function getConversationMessages(
+	conversationId,
+	cursor = null,
+	limit = DEFAULT_PAGE_SIZE,
+) {
 	const query = { conversationId };
 
 	// Si un curseur est fourni, on cherche les messages AVANT ce timestamp
@@ -112,9 +126,10 @@ async function getConversationMessages(conversationId, cursor = null, limit = DE
 		.populate("senderId", "displayName avatar");
 
 	// Déterminer le prochain curseur
-	const nextCursor = messages.length === limit
-		? messages[messages.length - 1].createdAt.toISOString()
-		: null;
+	const nextCursor =
+		messages.length === limit
+			? messages[messages.length - 1].createdAt.toISOString()
+			: null;
 
 	return {
 		messages,
@@ -148,7 +163,10 @@ async function getUndeliveredMessages(userId) {
 async function updateDeliveryStatus(messageId, status) {
 	const validStatuses = ["sent", "delivered", "undelivered", "failed"];
 	if (!validStatuses.includes(status)) {
-		throw new ValidationError("Invalid delivery status", { field: "status", allowed: validStatuses });
+		throw new ValidationError("Invalid delivery status", {
+			field: "status",
+			allowed: validStatuses,
+		});
 	}
 
 	const message = await Message.findByIdAndUpdate(
@@ -184,8 +202,12 @@ async function updateReadStatus(messageIds, readerId) {
 
 	// Mettre à jour le compteur unread dans les conversations concernées
 	if (result.modifiedCount > 0) {
-		const messages = await Message.find({ _id: { $in: messageIds } }).select("conversationId");
-		const conversationIds = [...new Set(messages.map((m) => m.conversationId.toString()))];
+		const messages = await Message.find({ _id: { $in: messageIds } }).select(
+			"conversationId",
+		);
+		const conversationIds = [
+			...new Set(messages.map((m) => m.conversationId.toString())),
+		];
 
 		for (const convId of conversationIds) {
 			const conversation = await Conversation.findById(convId);
