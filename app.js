@@ -7,6 +7,7 @@ const errorHandler = require("./src/middleware/errorHandler");
 const authRoutes = require("./src/routes/auth");
 const userRoutes = require("./src/routes/users");
 const contactRoutes = require("./src/routes/contacts");
+const conversationRoutes = require("./src/routes/conversations");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get("/", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/contacts", contactRoutes);
+app.use("/api/conversations", conversationRoutes);
 
 // Error handler — toujours en dernier
 app.use(errorHandler);
