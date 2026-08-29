@@ -8,7 +8,7 @@
 	"main": "app.js",
 	"scripts": {
 		"start": "nodemon server.js",
-		"test": "DOTENV_CONFIG_PATH=.env.test jest",
+		"test": "DOTENV_CONFIG_PATH=.env.test jest --forceExit",
 		"lint": "biome check .",
 		"format": "biome format . --write"
 	},

@@ -105,7 +105,9 @@ async function main() {
 	// 5. Bob écoute les indicateurs de frappe
 	bobSocket.on("typing_status", (status) => {
 		if (status.isTyping) {
-			console.log(`⌨️  Bob sees: ${status.displayName || "Someone"} is typing...\n`);
+			console.log(
+				`⌨️  Bob sees: ${status.displayName || "Someone"} is typing...\n`,
+			);
 		} else {
 			console.log("⌨️  Bob sees: typing stopped\n");
 		}
@@ -117,7 +119,10 @@ async function main() {
 	console.log("3. Alice sends a message to Bob...");
 	aliceSocket.emit(
 		"send_message",
-		{ recipientId: bob.id, content: "Salut Bob ! Ceci est un test temps réel 🚀" },
+		{
+			recipientId: bob.id,
+			content: "Salut Bob ! Ceci est un test temps réel 🚀",
+		},
 		(ack) => {
 			if (ack.success) {
 				console.log("   ✅ Server acknowledged the message:");

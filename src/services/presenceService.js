@@ -46,6 +46,13 @@ function scheduleOffline(userId, io) {
 	const timer = setTimeout(async () => {
 		try {
 			const redis = getRedisClient();
+
+			// Ne rien faire si le client Redis n'est plus connecté (ex: arrêt du serveur ou tests terminés)
+			if (!redis.isOpen) {
+				offlineTimers.delete(userId);
+				return;
+			}
+
 			const lastSeen = new Date();
 
 			await redis.del(`presence:${userId}`);
@@ -67,6 +74,11 @@ function scheduleOffline(userId, io) {
 			});
 		}
 	}, OFFLINE_GRACE_PERIOD_MS);
+
+	// unref() permet au process de se terminer sans attendre ce timer (utile pour les tests)
+	if (typeof timer.unref === "function") {
+		timer.unref();
+	}
 
 	offlineTimers.set(userId, timer);
 }
@@ -116,9 +128,20 @@ async function broadcastPresence(userId, status, lastSeen, io) {
 	}
 }
 
+/**
+ * Annule tous les timers en attente (utile pour les tests)
+ */
+function clearAllTimers() {
+	for (const timer of offlineTimers.values()) {
+		clearTimeout(timer);
+	}
+	offlineTimers.clear();
+}
+
 module.exports = {
 	setOnline,
 	scheduleOffline,
 	cancelOfflineSchedule,
 	getPresenceStatus,
+	clearAllTimers,
 };

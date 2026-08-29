@@ -15,7 +15,7 @@ function messageHandler(io, socket) {
 	 * Emits: message_ack (to sender), new_message (to recipient)
 	 */
 	socket.on("send_message", async (data, callback) => {
-		try{
+		try {
 			const { recipientId, content } = data;
 
 			// creer le message via le service
@@ -34,8 +34,8 @@ function messageHandler(io, socket) {
 			};
 
 			// Si le client a fourni un callback, l'utiliser
-			if (typeof callback === "function"){
-				callback({ success: true, ...ack })
+			if (typeof callback === "function") {
+				callback({ success: true, ...ack });
 			}
 
 			// Emettre un event message_ack
@@ -51,14 +51,14 @@ function messageHandler(io, socket) {
 				deliveryStatus: message.deliveryStatus,
 				readStatus: message.readStatus,
 				createdAt: message.createdAt,
-			}) ;
+			});
 
 			logger.info("Message sent via WebSocket", {
 				messageId: message._id,
 				senderId: userId,
 				recipientId,
 			});
-		} catch(error){
+		} catch (error) {
 			logger.error("Error sending message via WebSocket", {
 				userId,
 				error: error.message,
@@ -73,18 +73,20 @@ function messageHandler(io, socket) {
 		}
 	});
 
-
-
 	/**
 	 * Event: message_read
 	 * Payload: { messageIds: string[] }
 	 * Emits: read_receipt (to original sender)
 	 */
 	socket.on("message_read", async (data) => {
-		try{
+		try {
 			const { messageIds } = data;
 
-			if (!messageIds || !Array.isArray(messageIds) || messageIds.length === 0) {
+			if (
+				!messageIds ||
+				!Array.isArray(messageIds) ||
+				messageIds.length === 0
+			) {
 				return;
 			}
 
@@ -97,10 +99,14 @@ function messageHandler(io, socket) {
 			if (result.markedAsRead > 0) {
 				// Récupérer les messages pour connaître les senders
 				const Message = require("../models/Message");
-				const messages = await Message.find({ _id: { $in: batch } }).select("senderId");
+				const messages = await Message.find({ _id: { $in: batch } }).select(
+					"senderId",
+				);
 
 				// Grouper par sender
-				const senderIds = [...new Set(messages.map((m) => m.senderId.toString()))];
+				const senderIds = [
+					...new Set(messages.map((m) => m.senderId.toString())),
+				];
 
 				for (const senderId of senderIds) {
 					io.to(`user:${senderId}`).emit("read_receipt", {
@@ -115,15 +121,13 @@ function messageHandler(io, socket) {
 				userId,
 				count: result.markedAsRead,
 			});
-		} catch (error){
+		} catch (error) {
 			logger.error("Error processing read receipts", {
 				userId,
 				error: error.message,
 			});
 		}
 	});
-
-
 
 	/**
 	 * À la connexion : envoyer les messages non-livrés
