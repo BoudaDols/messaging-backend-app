@@ -1,6 +1,5 @@
 require("dotenv").config({ path: process.env.DOTENV_CONFIG_PATH || ".env" });
 
-
 const express = require("express");
 const cors = require("cors");
 const errorHandler = require("./src/middleware/errorHandler");
@@ -15,7 +14,6 @@ const app = express();
 
 // CORS — EN PREMIER, avant tout le reste
 app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
-
 
 // Middleware pour parser le JSON dans le body des requêtes
 app.use(express.json());
@@ -33,6 +31,5 @@ app.use("/api/conversations", conversationRoutes);
 
 // Error handler — toujours en dernier
 app.use(errorHandler);
-
 
 module.exports = app;
