@@ -8,23 +8,26 @@
 	"main": "app.js",
 	"scripts": {
 		"start": "nodemon server.js",
-		"test": "DOTENV_CONFIG_PATH=.env.test jest",
+		"test": "DOTENV_CONFIG_PATH=.env.test jest --forceExit",
 		"lint": "biome check .",
 		"format": "biome format . --write"
 	},
 	"dependencies": {
+		"@socket.io/redis-adapter": "^8.3.0",
 		"bcrypt": "^6.0.0",
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
 		"jsonwebtoken": "^9.0.3",
 		"mongoose": "^9.9.2",
-		"redis": "^6.2.1"
+		"redis": "^6.2.1",
+		"socket.io": "^4.8.3"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.8",
 		"fast-check": "^4.9.0",
 		"jest": "^30.4.2",
 		"nodemon": "^3.1.14",
+		"socket.io-client": "^4.8.3",
 		"supertest": "^7.2.2"
 	}
 }
