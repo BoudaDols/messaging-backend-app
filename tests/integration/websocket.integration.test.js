@@ -82,7 +82,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
 	// Annuler tous les timers de présence en attente
-	const presenceService = require("../../src/services/presenceService");
 	presenceService.clearAllTimers();
 
 	// Attendre un court instant pour que les déconnexions se propagent
